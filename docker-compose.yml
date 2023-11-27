@@ -3,18 +3,28 @@ version: '3.8'
 services:
   cafe-management-system-db:
     image: cafe-management-system-db
+    container_name: cafe-management-system-db
     ports:
       - "33061:3306"
     networks:
       - cafe-management-system-network
+
   cafe-management-system-be:
     image: cafe-management-system-be
+    container_name: cafe-management-system-be
+    depends_on:
+      - cafe-management-system-db
     ports:
       - "8081:8081"
     networks:
       - cafe-management-system-network
+
   cafe-management-system-fe:
     image: cafe-management-system-fe
+    container_name: cafe-management-system-fe
+    depends_on:
+      - cafe-management-system-db
+      - cafe-management-system-be
     ports:
       - "4200:4200"
     networks:
