@@ -69,10 +69,10 @@ public class CategoryServiceImpl implements CategoryService {
     public ResponseEntity<String> update(@NotNull final CategoryDto categoryDto) {
         try {
             if (jwtFilter.isAdmin()) {
-                Optional<CategoryEntity> categoryWrapper = categoryRepository.findById(categoryDto.getId());
+                Optional<CategoryEntity> categoryWrapper = categoryRepository.findById(categoryDto.id());
                 if (categoryWrapper.isPresent()) {
                     CategoryEntity category = categoryWrapper.get();
-                    category.setName(categoryDto.getName());
+                    category.setName(categoryDto.name());
                     categoryRepository.save(category);
                     return CafeUtils.getResponseEntity("Category Updated Successfully", HttpStatus.OK);
                 } else {

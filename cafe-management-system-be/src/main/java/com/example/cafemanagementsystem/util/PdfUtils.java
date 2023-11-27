@@ -34,13 +34,13 @@ public final class PdfUtils {
                                                  @NotNull final String storeLocation)
             throws FileNotFoundException, DocumentException, JsonProcessingException {
         final Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(storeLocation + billDto.getUuid() + ".pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream(storeLocation + billDto.uuid() + ".pdf"));
 
         document.open();
         document.add(createRectangle());
         document.add(createHeader());
         document.add(createDataSection(billDto));
-        document.add(createItemsTable(billDto.getProductDetail()));
+        document.add(createItemsTable(billDto.productDetail()));
         document.add(createFooter(billDto));
         document.close();
     }
@@ -80,7 +80,7 @@ public final class PdfUtils {
     private static Paragraph createDataSection(final BillDto billDto) {
         final String data = String.format(
                 "Name: %s \nContact Number: %s \nEmail: %s \nPayment Method: %s \n",
-                billDto.getName(), billDto.getContactNumber(), billDto.getEmail(), billDto.getPaymentMethod());
+                billDto.name(), billDto.contactNumber(), billDto.email(), billDto.paymentMethod());
         return new Paragraph(data + "\n \n", getFont("Data"));
     }
 
@@ -106,11 +106,11 @@ public final class PdfUtils {
         });
 
         for (ReportItemDto item : reportItems) {
-            table.addCell(item.getName());
-            table.addCell(item.getCategory());
-            table.addCell(String.valueOf(item.getQuantity()));
-            table.addCell(String.valueOf(item.getPrice()));
-            table.addCell(String.valueOf(item.getTotal()));
+            table.addCell(item.name());
+            table.addCell(item.category());
+            table.addCell(String.valueOf(item.quantity()));
+            table.addCell(String.valueOf(item.price()));
+            table.addCell(String.valueOf(item.total()));
         }
 
         return table;
@@ -118,7 +118,7 @@ public final class PdfUtils {
 
     private static Paragraph createFooter(@NotNull final BillDto billDto) {
         return new Paragraph(
-                String.format("Total : %s \nThank you for visiting. Please visit again!!", billDto.getTotal()),
+                String.format("Total : %s \nThank you for visiting. Please visit again!!", billDto.total()),
                 getFont("Data"));
     }
 }

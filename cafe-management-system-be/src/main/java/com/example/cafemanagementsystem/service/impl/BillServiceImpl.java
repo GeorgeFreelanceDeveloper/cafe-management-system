@@ -42,11 +42,20 @@ public class BillServiceImpl implements BillService {
     @Override
     public ResponseEntity<String> generateReport(@NotNull final BillDto billDto) {
         try {
-            billDto.setUuid(CafeUtils.getUUID());
-            billDto.setCreatedBy(jwtFilter.getCurrentUser());
-            BillEntity billEntity = BillMapper.INSTANCE.billDtoToBillEntity(billDto);
+            BillDto billDtoPrepared = new BillDto(
+                    billDto.id(),
+                    CafeUtils.getUUID(),
+                    billDto.name(),
+                    billDto.email(),
+                    billDto.contactNumber(),
+                    billDto.paymentMethod(),
+                    billDto.total(),
+                    billDto.productDetail(),
+                    jwtFilter.getCurrentUser()
+            );
+            BillEntity billEntity = BillMapper.INSTANCE.billDtoToBillEntity(billDtoPrepared);
             BillEntity billEntitySaved = billRepository.save(billEntity);
-            PdfUtils.generateAndSaveBillReport(billDto, PDF_STORE_LOCATION);
+            PdfUtils.generateAndSaveBillReport(billDtoPrepared, PDF_STORE_LOCATION);
             return new ResponseEntity<String>(billEntitySaved.getId().toString(), HttpStatus.CREATED);
         } catch (Exception ex) {
             log.error("Failed call generateReport", ex);
@@ -82,7 +91,7 @@ public class BillServiceImpl implements BillService {
         try {
             if (billRepository.existsById(id)) {
                 BillDto billDto = BillMapper.INSTANCE.billEntityToBillDto(billRepository.findById(id).get());
-                new File(PDF_STORE_LOCATION + billDto.getUuid() + ".pdf").delete();
+                new File(PDF_STORE_LOCATION + billDto.uuid() + ".pdf").delete();
                 billRepository.deleteById(id);
                 return CafeUtils.getResponseEntity("Bill Delete Successfully", HttpStatus.OK);
             } else {
@@ -99,7 +108,7 @@ public class BillServiceImpl implements BillService {
         try {
             if (billRepository.existsById(id)) {
                 BillDto billDto = BillMapper.INSTANCE.billEntityToBillDto(billRepository.findById(id).get());
-                byte[] bytes = Files.readAllBytes(Paths.get(PDF_STORE_LOCATION + billDto.getUuid() + ".pdf"));
+                byte[] bytes = Files.readAllBytes(Paths.get(PDF_STORE_LOCATION + billDto.uuid() + ".pdf"));
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_PDF);

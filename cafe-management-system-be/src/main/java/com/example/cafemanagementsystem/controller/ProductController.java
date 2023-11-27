@@ -65,7 +65,7 @@ public class ProductController {
             return productService.findById(id);
         } catch (Exception ex) {
             log.error("Failed call findById", ex);
-            return new ResponseEntity<>(new ProductDto(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

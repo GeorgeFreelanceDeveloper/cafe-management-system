@@ -45,9 +45,9 @@ public class ProductServiceImpl implements ProductService {
         try {
             if (jwtFilter.isAdmin()) {
                 ProductEntity productEntity = ProductMapper.INSTANCE.productDtoToProductEntity(productDto);
-                Optional<CategoryEntity> categoryEntityWrapper = categoryRepository.findById(productDto.getCategoryId());
+                Optional<CategoryEntity> categoryEntityWrapper = categoryRepository.findById(productDto.categoryId());
                 if (categoryEntityWrapper.isEmpty()) {
-                    return CafeUtils.getResponseEntity(String.format("Category %s not fond", productDto.getCategoryId()), HttpStatus.NOT_FOUND);
+                    return CafeUtils.getResponseEntity(String.format("Category %s not fond", productDto.categoryId()), HttpStatus.NOT_FOUND);
                 }
 
                 productEntity.setId(null); //Prevent remove before create new record
@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
             }
         } catch (Exception ex) {
             log.error("Failed call findById", ex);
-            return new ResponseEntity<>(new ProductDto(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -120,28 +120,28 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<String> update(@NotNull final ProductDto productDto) {
         try {
             if (jwtFilter.isAdmin()) {
-                Optional<ProductEntity> productEntityWrapper = productRepository.findById(productDto.getId());
+                Optional<ProductEntity> productEntityWrapper = productRepository.findById(productDto.id());
                 if (productEntityWrapper.isPresent()) {
                     ProductEntity productEntity = productEntityWrapper.get();
 
-                    if (productDto.getName() != null) {
-                        productEntity.setName(productDto.getName());
+                    if (productDto.name() != null) {
+                        productEntity.setName(productDto.name());
                     }
-                    if (productDto.getDescription() != null) {
-                        productEntity.setDescription(productDto.getDescription());
+                    if (productDto.description() != null) {
+                        productEntity.setDescription(productDto.description());
                     }
-                    if (productDto.getPrice() != null) {
-                        productEntity.setPrice(productDto.getPrice());
+                    if (productDto.price() != null) {
+                        productEntity.setPrice(productDto.price());
                     }
-                    if (productDto.getStatus() != null) {
-                        productEntity.setStatus(productDto.getStatus());
+                    if (productDto.status() != null) {
+                        productEntity.setStatus(productDto.status());
                     }
 
-                    if (productDto.getCategoryId() != null) {
-                        Optional<CategoryEntity> categoryEntityWrapper = categoryRepository.findById(productDto.getCategoryId());
+                    if (productDto.categoryId() != null) {
+                        Optional<CategoryEntity> categoryEntityWrapper = categoryRepository.findById(productDto.categoryId());
 
                         if (categoryEntityWrapper.isEmpty()) {
-                            return CafeUtils.getResponseEntity(String.format("Category %s not fond", productDto.getCategoryId()), HttpStatus.NOT_FOUND);
+                            return CafeUtils.getResponseEntity(String.format("Category %s not fond", productDto.categoryId()), HttpStatus.NOT_FOUND);
                         }
 
                         productEntity.setCategory(categoryEntityWrapper.get());
@@ -186,15 +186,15 @@ public class ProductServiceImpl implements ProductService {
                                               @NotNull final Optional<ProductEntity> productEntityWrapper) {
         ProductEntity productEntity = productEntityWrapper.get();
 
-        productEntity.setId(productDto.getId());
-        productEntity.setName(productDto.getName());
-        productEntity.setDescription(productDto.getDescription());
-        productEntity.setPrice(productDto.getPrice());
-        productEntity.setStatus(productDto.getStatus());
+        productEntity.setId(productDto.id());
+        productEntity.setName(productDto.name());
+        productEntity.setDescription(productDto.description());
+        productEntity.setPrice(productDto.price());
+        productEntity.setStatus(productDto.status());
 
-        if (productDto.getCategoryId() != null) {
+        if (productDto.categoryId() != null) {
             CategoryEntity categoryEntity = new CategoryEntity();
-            categoryEntity.setId(productDto.getCategoryId());
+            categoryEntity.setId(productDto.categoryId());
             productEntity.setCategory(categoryEntity);
         }
 
