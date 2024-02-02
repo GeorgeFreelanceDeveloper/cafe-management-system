@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Entity
 @DynamicUpdate
 @DynamicInsert
-@Table(name = "user")
+@Table(name = "\"user\"")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
